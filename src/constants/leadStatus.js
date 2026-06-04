@@ -1,0 +1,18 @@
+export const LEAD_STATUS = {
+  NEW: "NEW",
+
+  ASSIGNED: "ASSIGNED",
+
+  CONTACTED: "CONTACTED",
+
+  QUALIFIED: "QUALIFIED",
+
+  NEGOTIATION: "NEGOTIATION",
+
+  WON: "WON",
+
+  LOST: "LOST",
+};
+
+export const LEAD_STATUS_LIST =
+  Object.values(LEAD_STATUS);

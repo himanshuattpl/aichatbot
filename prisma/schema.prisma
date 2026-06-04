@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CEO
+  CTO
+  CFO
+  sales_manager
+  sales_executive
+  vendor_manager
+  investor_manager
+  customer_support
+  DEPARTMENT_HEAD
+  LEAD_MANAGER
+  USER
+}
+
+enum Department {
+  GENERAL
+  EMS
+  AGRITECH
+}
+
+enum Platform {
+  WEBSITE
+  WHATSAPP
+}
+
+enum SessionStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum LeadStatus {
+  NEW
+  ASSIGNED
+  CONTACTED
+  QUALIFIED
+  NEGOTIATION
+  WON
+  LOST
+}
+
+model User {
+  id String @id @default(cuid())
+
+  name     String
+  email    String @unique
+  password String
+
+  role Role @default(USER)
+
+  department Department?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatSessions ChatSession[]
+
+  assignedLeads Lead[]
+}
+
+model ChatSession {
+  id String @id @default(cuid())
+
+  platform Platform
+
+  department Department
+
+  status SessionStatus @default(ACTIVE)
+
+  visitorName  String?
+  visitorEmail String?
+  visitorPhone String?
+  ip           String?
+
+  isEscalated Boolean @default(false)
+
+  escalatedAt DateTime?
+
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  messages ChatMessage[]
+
+  @@index([department])
+  @@index([platform])
+}
+
+model ChatMessage {
+  id String @id @default(cuid())
+
+  sessionId String
+
+  sender SenderType
+
+  message String @db.LongText
+
+  responseTimeMs Int?
+
+  createdAt DateTime @default(now())
+
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model Lead {
+  id String @id @default(cuid())
+
+  name  String
+  email String?
+  phone String?
+
+  source Platform
+
+  department Department
+
+  status LeadStatus @default(NEW)
+
+  notes String? @db.LongText
+
+  assignedToId String?
+  assignedTo   User?   @relation(fields: [assignedToId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([department])
+  @@index([status])
+}
+
+enum SenderType {
+  USER
+  AI
+  AGENT
+  SYSTEM
+}
