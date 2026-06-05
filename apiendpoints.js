@@ -76,3 +76,29 @@ http://localhost:5000/api/auth/register    register admin/chairman
   "password": "Admin@123",
   "role": "ADMIN"
 }
+
+http://localhost:5000/api/user       create users
+
+{
+  "name": "CEO",
+  "email": "ceo@attpl.com",
+  "password": "Password@123",
+  "role": "CEO"
+}
+
+
+{
+  "name": "EMS Head",
+  "email": "emshead@attpl.com",
+  "password": "Password@123",
+  "role": "DEPARTMENT_HEAD",
+  "departmentId": "cmq0ifv9q0001unvwwlmam3ak"
+}
+
+
+http://localhost:5000/api/auth/login    for login
+
+{
+  "email": "ceo@attpl.com",
+  "password": "Password@123"
+}
